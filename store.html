@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛒 vpsgiare — Mua VPS & Dịch Vụ Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="store.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Top Bar -->
+    <header id="top-bar">
+      <a href="https://vpsgiare098.com" target="_blank" class="logo">
+        <img src="avatar.png" alt="Avatar" class="logo-avatar"> vpsgiare
+      </a>
+      <div class="store-topbar-right">
+        <div id="user-area">
+          <!-- Filled by JS: login/register or user info -->
+        </div>
+        <button id="btn-settings-gear" class="gear-btn" title="Cài đặt">⚙️</button>
+      </div>
+    </header>
+
+    <!-- Settings Drawer (hidden by default) -->
+    <div id="settings-drawer" class="settings-drawer hidden">
+      <div class="drawer-header">
+        <h3>⚙️ Cài Đặt</h3>
+        <button id="btn-close-drawer" class="btn-icon" title="Đóng">✕</button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-section">
+          <label class="drawer-label">🎨 Giao diện / Theme</label>
+          <div class="theme-switch-row">
+            <button class="theme-option" data-theme="dark"><span>🌙</span> Tối (Dark)</button>
+            <button class="theme-option" data-theme="light"><span>☀️</span> Sáng (Light)</button>
+          </div>
+        </div>
+        <div class="drawer-section">
+          <label class="drawer-label">🌐 Ngôn ngữ</label>
+          <p class="drawer-hint">Tiếng Việt (mặc định)</p>
+        </div>
+        <div class="drawer-section" id="drawer-account-section" style="display:none;">
+          <label class="drawer-label">👤 Tài khoản</label>
+          <p class="drawer-hint" id="drawer-account-info"></p>
+          <button id="btn-drawer-logout" class="btn-secondary btn-small">🚪 Đăng Xuất</button>
+        </div>
+        <div class="drawer-section" id="drawer-history-section" style="display:none;">
+          <label class="drawer-label">📋 Lịch sử giao dịch</label>
+          <a href="history.html" class="btn-primary btn-small" style="display:inline-block;text-decoration:none;margin-top:4px;">📋 Xem Lịch Sử Mua Hàng & Nạp Tiền</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth Modal (Login / Register) -->
+    <div id="auth-modal" class="overlay hidden">
+      <div class="overlay-content modal-auth">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-auth="login">🔑 Đăng Nhập</button>
+          <button class="auth-tab" data-auth="register">📝 Đăng Ký</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="auth-login" class="auth-form active">
+          <label>Tên đăng nhập
+            <input type="text" id="login-user" placeholder="username" autocomplete="username">
+          </label>
+          <label>Mật khẩu
+            <input type="password" id="login-pass" placeholder="••••••" autocomplete="current-password">
+          </label>
+          <p id="login-error" class="auth-error hidden"></p>
+          <button id="btn-do-login" class="btn-primary btn-large">Đăng Nhập</button>
+          <p class="auth-switch">Chưa có tài khoản? <a href="#" id="link-to-register">Đăng ký ngay</a></p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="auth-register" class="auth-form">
+          <label>Tên đăng nhập <span class="required">*</span>
+            <input type="text" id="reg-user" placeholder="Chọn tên đăng nhập" autocomplete="username">
+          </label>
+          <label>Email
+            <input type="email" id="reg-email" placeholder="email@example.com" autocomplete="email">
+          </label>
+          <label>Mật khẩu <span class="required">*</span>
+            <input type="password" id="reg-pass" placeholder="Ít nhất 4 ký tự" autocomplete="new-password">
+          </label>
+          <label>Xác nhận mật khẩu <span class="required">*</span>
+            <input type="password" id="reg-pass-confirm" placeholder="Nhập lại mật khẩu">
+          </label>
+          <p id="reg-error" class="auth-error hidden"></p>
+          <button id="btn-do-register" class="btn-primary btn-large">📝 Tạo Tài Khoản</button>
+          <p class="auth-switch">Đã có tài khoản? <a href="#" id="link-to-login">Đăng nhập</a></p>
+        </div>
+
+        <button id="btn-close-auth" class="btn-close-modal" title="Đóng">✕</button>
+      </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="store-hero">
+      <div class="hero-content">
+        <h1>🚀 VPS & Game Hosting Giá Rẻ</h1>
+        <p>Máy chủ game, VPS Cloud, Proxy, Steam Key — Tất cả tại <strong>vpsgiare098.com</strong></p>
+      </div>
+    </section>
+
+    <!-- Category Filter -->
+    <div class="category-bar">
+      <button class="cat-pill active" data-cat="all">🏪 Tất cả</button>
+      <div id="category-pills"></div>
+      <div class="cat-search-wrap">
+        <input type="text" id="store-search" placeholder="🔍 Tìm kiếm dịch vụ...">
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <section class="store-section">
+      <div id="store-product-grid" class="store-grid"></div>
+      <p id="store-empty" class="hint hidden">Không tìm thấy dịch vụ nào phù hợp.</p>
+    </section>
+
+    <!-- Purchase Modal -->
+    <div id="purchase-modal" class="overlay hidden">
+      <div class="overlay-content modal-purchase">
+        <button id="btn-close-purchase" class="btn-close-modal" title="Đóng">✕</button>
+        <div id="purchase-product-detail"></div>
+      </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="deposit-modal" class="overlay hidden">
+      <div class="overlay-content modal-auth">
+        <button id="btn-close-deposit" class="btn-close-modal" title="Đóng">✕</button>
+        <h3 style="margin-bottom:16px;">💳 Nạp Tiền Vào Ví</h3>
+        <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:16px;">Chọn số tiền cần nạp. Sau khi gửi yêu cầu, Admin sẽ duyệt và cộng tiền vào tài khoản của bạn.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <label style="display:flex;flex-direction:column;gap:4px;font-size:0.8rem;color:var(--text-dim);font-weight:600;">
+            Số tiền nạp (₫)
+            <input type="number" id="deposit-amount" placeholder="VD: 200000" min="10000" step="10000" style="padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem;">
+          </label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn-secondary btn-small deposit-quick" data-amount="50000">50k</button>
+            <button class="btn-secondary btn-small deposit-quick" data-amount="100000">100k</button>
+            <button class="btn-secondary btn-small deposit-quick" data-amount="200000">200k</button>
+            <button class="btn-secondary btn-small deposit-quick" data-amount="500000">500k</button>
+            <button class="btn-secondary btn-small deposit-quick" data-amount="1000000">1M</button>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:4px;font-size:0.8rem;color:var(--text-dim);font-weight:600;">
+            Ghi chú (tùy chọn)
+            <input type="text" id="deposit-note" placeholder="VD: Chuyển khoản Vietcombank" style="padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:0.9rem;">
+          </label>
+          <p id="deposit-error" class="auth-error hidden"></p>
+          <button id="btn-submit-deposit" class="btn-primary btn-large">📤 Gửi Yêu Cầu Nạp Tiền</button>
+          <p style="font-size:0.75rem;color:var(--text-dim);text-align:center;">⏳ Yêu cầu sẽ được Admin xử lý trong vòng 5-30 phút.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="store-footer">
+      <p>© 2026 <a href="https://vpsgiare098.com" target="_blank">vpsgiare098.com</a> — VPS & Game Services</p>
+    </footer>
+
+  </div>
+
+  <script src="store.js"></script>
+</body>
+</html>

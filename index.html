@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏪 vpsgiare</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Top Bar -->
+    <header id="top-bar">
+      <a href="https://vpsgiare098.com" target="_blank" class="logo"><img src="avatar.png" alt="Avatar" class="logo-avatar"> vpsgiare</a>
+      <div class="stats">
+        <button id="btn-theme-toggle" class="stat theme-btn" title="Chuyển đổi giao diện Sáng / Tối">🌙</button>
+        <a href="store.html" class="stat admin-link" title="Cửa Hàng Khách Hàng" style="border-color:var(--green);">🛒 Storefront</a>
+        <a href="admin.html" class="stat admin-link" title="Admin Panel">🔐 Admin</a>
+        <div class="stat" id="stat-money" title="Số dư ví">💰 <span>2.000.000 ₫</span></div>
+        <div class="stat" id="stat-day" title="Ngày kinh doanh">📅 Ngày <span>1</span></div>
+        <div class="stat" id="stat-rep" title="Uy tín shop">⭐ <span>50</span></div>
+        <div class="stat" id="stat-level" title="Cấp độ shop">🏆 Lv <span>1</span></div>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav id="tabs">
+      <button class="tab active" data-tab="shop">🛒 Cửa Hàng (My Shop)</button>
+      <button class="tab" data-tab="wholesale">📦 Nhập Hàng (Wholesale)</button>
+      <button class="tab" data-tab="upgrades">🔧 Nâng Cấp (Upgrades)</button>
+      <button class="tab" data-tab="log">📋 Lịch Sử (Log)</button>
+      <button class="tab" data-tab="settings">⚙️ Cài Đặt (Settings)</button>
+    </nav>
+
+    <!-- Shop Tab -->
+    <section id="tab-shop" class="tab-content active">
+      <div class="section-header">
+        <h2>🛒 Dịch Vụ Đang Bán (Active Services)</h2>
+        <div class="shelf-info">Server Slots: <span id="shelf-used">0</span> / <span id="shelf-max">10</span></div>
+      </div>
+      <p class="hint" id="shop-empty-hint">Chưa có dịch vụ nào! Hãy qua tab <strong>Nhập Hàng (Wholesale)</strong> hoặc đăng sản phẩm từ <strong>Admin</strong>.</p>
+      <div id="shop-grid" class="item-grid"></div>
+      <div class="action-bar">
+        <button id="btn-open-shop" class="btn-primary btn-large" disabled>
+          🚪 Mở Cửa Shop Bán Hàng (Open Shop)
+        </button>
+      </div>
+    </section>
+
+    <!-- Wholesale Tab -->
+    <section id="tab-wholesale" class="tab-content">
+      <div class="section-header">
+        <h2>📦 Kho Dịch Vụ Đại Lý (Wholesale Market)</h2>
+        <p class="subtitle">Nhập VPS, Server game, Proxy với giá đại lý chiết khấu cao để bán lại!</p>
+      </div>
+      <div id="wholesale-grid" class="item-grid"></div>
+    </section>
+
+    <!-- Upgrades Tab -->
+    <section id="tab-upgrades" class="tab-content">
+      <div class="section-header">
+        <h2>🔧 Nâng Cấp Hệ Thống (Upgrades)</h2>
+        <p class="subtitle">Mở rộng tủ rack máy chủ, đường truyền mạng và quảng cáo để thu hút game thủ!</p>
+      </div>
+      <div id="upgrades-grid" class="upgrades-grid"></div>
+    </section>
+
+    <!-- Log Tab -->
+    <section id="tab-log" class="tab-content">
+      <div class="section-header">
+        <h2>📋 Nhật Ký Bán Hàng (Daily Log)</h2>
+      </div>
+      <div id="log-entries"></div>
+    </section>
+
+    <!-- Settings Tab -->
+    <section id="tab-settings" class="tab-content">
+      <div class="section-header">
+        <h2>⚙️ Cài Đặt Shop (Settings)</h2>
+      </div>
+      <div class="settings-grid" style="display:flex;flex-direction:column;gap:16px;">
+        <div class="setting-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+          <h3>🎨 Giao Diện / Theme Mode</h3>
+          <p class="subtitle" style="margin-bottom:12px;">Chọn chế độ giao diện Sáng hoặc Tối cho trang web.</p>
+          <div class="setting-row" style="display:flex;gap:12px;align-items:center;">
+            <label style="display:flex;gap:8px;align-items:center;font-size:0.9rem;">
+              Chế độ hiển thị:
+              <select id="storefront-theme-select" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);">
+                <option value="dark">🌙 Dark Theme (Giao diện Tối)</option>
+                <option value="light">☀️ Light Theme (Giao diện Sáng)</option>
+              </select>
+            </label>
+            <button id="btn-storefront-save-theme" class="btn-primary btn-small">Áp Dụng</button>
+          </div>
+        </div>
+
+        <div class="setting-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+          <h3>🏪 Thông Tin Cửa Hàng</h3>
+          <p class="subtitle" style="margin-bottom:8px;">Hệ thống cung cấp dịch vụ VPS & Game Hosting chuyên nghiệp.</p>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:4px;">🌐 Website chính thức: <a href="https://vpsgiare098.com" target="_blank" style="color:var(--accent);">https://vpsgiare098.com</a></p>
+          <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:12px;">🔐 Đăng nhập quyền quản trị để thêm tài khoản, đăng sản phẩm và chỉnh giá.</p>
+          <a href="admin.html" class="btn-secondary btn-small" style="display:inline-block;text-decoration:none;">Vào Trang Admin 🔐</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selling Overlay -->
+    <div id="selling-overlay" class="overlay hidden">
+      <div class="overlay-content selling-screen">
+        <h2>🏪 Shop is Open!</h2>
+        <div id="customer-area">
+          <div id="customer-sprite"></div>
+          <div id="customer-bubble" class="speech-bubble hidden"></div>
+        </div>
+        <div id="selling-feed"></div>
+        <div id="selling-summary" class="hidden">
+          <h3>📊 End of Day Report</h3>
+          <div id="summary-content"></div>
+          <button id="btn-close-day" class="btn-primary">Continue to Next Day →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Setting Modal -->
+    <div id="price-modal" class="overlay hidden">
+      <div class="overlay-content modal-small">
+        <h3>💲 Đặt Giá Bán / Set Selling Price</h3>
+        <div id="price-modal-item"></div>
+        <div class="price-controls">
+          <label>Giá bán (₫): <input type="number" id="price-input" min="1000" step="1000"></label>
+          <div class="price-hints">
+            <span class="hint-cost">Giá vốn: <span id="hint-cost-val"></span></span>
+            <span class="hint-suggested">Đề xuất: <span id="hint-suggested-val"></span></span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-set-price" class="btn-primary">Lưu Giá (Save)</button>
+          <button id="btn-cancel-price" class="btn-secondary">Hủy (Cancel)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

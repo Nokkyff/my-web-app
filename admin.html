@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 vpsgiare — Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Login Screen -->
+    <div id="login-screen">
+      <div class="login-box">
+        <img src="avatar.png" alt="Avatar" class="login-avatar">
+        <h1>🔐 vpsgiare Admin</h1>
+        <p class="subtitle">Enter your admin password to continue</p>
+        <div class="login-form">
+          <input type="password" id="login-password" placeholder="Password" autocomplete="off">
+          <button id="btn-login" class="btn-primary btn-large">Login</button>
+        </div>
+        <p id="login-error" class="error-msg hidden">❌ Incorrect password</p>
+        <p class="login-hint">Default password: <code>admin</code></p>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="hidden">
+      <!-- Top Bar -->
+      <header id="top-bar">
+        <a href="index.html" class="logo">
+          <img src="avatar.png" alt="Avatar" class="logo-avatar"> vpsgiare
+        </a>
+        <div class="admin-badge">🔐 Admin Panel</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a href="store.html" class="btn-secondary btn-small" style="text-decoration:none;">🛒 Storefront</a>
+          <button id="btn-theme-toggle" class="stat theme-btn" title="Chuyển đổi giao diện Sáng / Tối">🌙</button>
+          <button id="btn-logout" class="btn-secondary btn-small">🚪 Logout</button>
+        </div>
+      </header>
+
+      <!-- Admin Tabs -->
+      <nav id="tabs">
+        <button class="tab active" data-tab="accounts">👥 Accounts</button>
+        <button class="tab" data-tab="products">📸 Post Products</button>
+        <button class="tab" data-tab="pricing">💲 Pricing</button>
+        <button class="tab" data-tab="inventory">📦 Inventory</button>
+        <button class="tab" data-tab="deposits">💳 Nạp Tiền (Deposits)</button>
+        <button class="tab" data-tab="settings">⚙️ Settings</button>
+      </nav>
+
+      <!-- Deposits Tab -->
+      <section id="tab-deposits" class="tab-content">
+        <div class="section-header">
+          <h2>💳 Quản Lý Nạp Tiền / Deposit Requests</h2>
+          <div class="header-actions">
+            <span id="deposits-stats" style="font-size:0.85rem;color:var(--text-dim);"></span>
+            <button id="btn-refresh-deposits" class="btn-secondary btn-small">🔄 Refresh</button>
+          </div>
+        </div>
+
+        <!-- Deposit Filters -->
+        <div class="pricing-toolbar" style="margin-bottom:12px;">
+          <label>Lọc trạng thái:
+            <select id="deposit-filter" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:0.85rem;">
+              <option value="all">Tất cả</option>
+              <option value="pending" selected>⏳ Đang chờ duyệt</option>
+              <option value="approved">✅ Đã duyệt</option>
+              <option value="rejected">❌ Đã từ chối</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="deposits-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Người dùng</th>
+                <th>Số tiền</th>
+                <th>Ghi chú</th>
+                <th>Ngày gửi</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="deposits-tbody"></tbody>
+          </table>
+        </div>
+        <div id="deposits-empty" class="posted-empty" style="display:none;">
+          <p>Chưa có yêu cầu nạp tiền nào.</p>
+        </div>
+      </section>
+
+      <!-- Accounts Tab -->
+      <section id="tab-accounts" class="tab-content active">
+        <div class="section-header">
+          <h2>👥 Account Management</h2>
+          <button id="btn-add-account" class="btn-primary">➕ Add Account</button>
+        </div>
+        <div class="table-wrapper">
+          <table id="accounts-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="accounts-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Post Products Tab -->
+      <section id="tab-products" class="tab-content">
+        <div class="section-header">
+          <h2>📸 Post Products</h2>
+        </div>
+
+        <!-- New Product Form -->
+        <div class="product-form-card">
+          <h3>➕ Add New Product</h3>
+          <div class="product-form">
+            <div class="product-image-upload" id="product-image-drop">
+              <div id="product-image-preview" class="image-preview-area">
+                <div class="image-placeholder" id="image-placeholder">
+                  <span class="placeholder-icon">📷</span>
+                  <span>Paste image here (Ctrl+V)</span>
+                  <span class="placeholder-sub">or click to upload / drag & drop</span>
+                </div>
+                <img id="preview-img" class="hidden" alt="Product preview">
+                <button id="btn-clear-image" class="btn-clear-img hidden" title="Remove image">✕</button>
+              </div>
+              <input type="file" id="product-image-file" accept="image/*" class="hidden">
+            </div>
+            <div class="product-fields">
+              <label>Tên Sản Phẩm / Product Name <span class="required">*</span>
+                <input type="text" id="prod-name" placeholder="VD: VPS Cloud NVMe 2C/4GB">
+              </label>
+              <label>Danh Mục / Category
+                <input type="text" id="prod-category" placeholder="Chọn hoặc nhập danh mục..." list="category-suggestions">
+                <datalist id="category-suggestions">
+                  <option value="VPS Cloud">
+                  <option value="VPS Game Anti-DDoS">
+                  <option value="VPS Dedicated">
+                  <option value="Game Hosting (Minecraft/Palworld)">
+                  <option value="Bot Discord & NodeJS">
+                  <option value="Proxy & Network">
+                  <option value="Game Keys & Bản Quyền">
+                  <option value="Dịch Vụ Game & Nạp Tiền">
+                </datalist>
+              </label>
+              <div class="product-price-row">
+                <label>Giá Vốn / Cost (VND ₫) <span class="required">*</span>
+                  <input type="number" id="prod-cost" placeholder="VD: 70000" min="0" step="1000">
+                </label>
+                <label>Giá Bán / Sell (VND ₫) <span class="required">*</span>
+                  <input type="number" id="prod-sell" placeholder="VD: 120000" min="0" step="1000">
+                </label>
+              </div>
+              <label>Mô tả dịch vụ / Description
+                <textarea id="prod-desc" placeholder="Cấu hình, thông số CPU/RAM, băng thông, tốc độ mạng..." rows="2"></textarea>
+              </label>
+              <label>Số lượng kho ban đầu / Stock
+                <input type="number" id="prod-stock" value="20" min="0" step="1">
+              </label>
+              <label style="display:flex;flex-direction:row;align-items:center;gap:8px;cursor:pointer;font-size:0.9rem;color:var(--text);margin:4px 0;">
+                <input type="checkbox" id="prod-publish" checked style="width:18px;height:18px;cursor:pointer;">
+                <span>🚀 <strong>Xuất bản ngay lên cửa hàng</strong> (Publish to Storefront)</span>
+              </label>
+              <button id="btn-post-product" class="btn-primary btn-large">📸 Đăng Sản Phẩm (Post & Publish)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Posted Products List -->
+        <div class="section-header" style="margin-top:24px">
+          <h3>📋 Posted Products (<span id="posted-count">0</span>)</h3>
+          <div class="header-actions">
+            <input type="text" id="product-search" placeholder="🔍 Search products..." class="search-input">
+          </div>
+        </div>
+        <div id="posted-products-grid" class="posted-grid"></div>
+      </section>
+
+      <!-- Pricing Tab -->
+      <section id="tab-pricing" class="tab-content">
+        <div class="section-header">
+          <h2>💲 Price Management</h2>
+          <div class="header-actions">
+            <button id="btn-save-prices" class="btn-primary">💾 Save All Prices</button>
+            <button id="btn-reset-prices" class="btn-secondary">🔄 Reset to Default</button>
+          </div>
+        </div>
+        <div class="pricing-toolbar">
+          <label>Bulk Markup: <input type="number" id="bulk-markup" value="0" min="-50" max="200" step="5">%</label>
+          <button id="btn-apply-markup" class="btn-secondary btn-small">Apply to All</button>
+        </div>
+        <div class="table-wrapper">
+          <table id="pricing-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Category</th>
+                <th>Wholesale Cost</th>
+                <th>Current Price</th>
+                <th>New Price</th>
+                <th>Margin</th>
+              </tr>
+            </thead>
+            <tbody id="pricing-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Inventory Tab -->
+      <section id="tab-inventory" class="tab-content">
+        <div class="section-header">
+          <h2>📦 Inventory Control</h2>
+          <button id="btn-save-inventory" class="btn-primary">💾 Save Changes</button>
+        </div>
+        <div class="table-wrapper">
+          <table id="inventory-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>In Stock</th>
+                <th>Set Quantity</th>
+                <th>Sell Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Settings Tab -->
+      <section id="tab-settings" class="tab-content">
+        <div class="section-header">
+          <h2>⚙️ Cài Đặt / Shop Settings</h2>
+        </div>
+        <div class="settings-grid">
+          <div class="setting-card">
+            <h3>🎨 Giao Diện / Theme Mode</h3>
+            <p class="subtitle" style="margin-bottom:12px;">Chuyển đổi giao diện Sáng / Tối cho cửa hàng và trang quản trị.</p>
+            <div class="setting-row">
+              <label>Chế độ hiển thị:
+                <select id="setting-theme-select">
+                  <option value="dark">🌙 Dark Theme (Giao diện Tối)</option>
+                  <option value="light">☀️ Light Theme (Giao diện Sáng)</option>
+                </select>
+              </label>
+              <button id="btn-save-theme" class="btn-primary btn-small">Áp dụng Giao Diện</button>
+            </div>
+          </div>
+          <div class="setting-card">
+            <h3>🔑 Đổi Mật Khẩu Admin</h3>
+            <div class="setting-row">
+              <input type="password" id="new-password" placeholder="Mật khẩu mới">
+              <input type="password" id="confirm-password" placeholder="Xác nhận mật khẩu mới">
+              <button id="btn-change-password" class="btn-primary btn-small">Cập Nhật</button>
+            </div>
+          </div>
+          <div class="setting-card">
+            <h3>🏪 Thông Tin Cửa Hàng</h3>
+            <div class="setting-row">
+              <label>Tên Shop: <input type="text" id="setting-shop-name" value="vpsgiare"></label>
+              <label>Địa chỉ Website: <input type="text" id="setting-shop-url" value="https://vpsgiare098.com"></label>
+              <button id="btn-save-settings" class="btn-primary btn-small">Lưu Thông Tin</button>
+            </div>
+          </div>
+          <div class="setting-card">
+            <h3>💾 Quản Lý Dữ Liệu</h3>
+            <div class="setting-row">
+              <button id="btn-export-data" class="btn-secondary btn-small">📤 Xuất Sao Lưu (JSON)</button>
+              <button id="btn-import-data" class="btn-secondary btn-small">📥 Nhập Dữ Liệu</button>
+              <button id="btn-reset-all" class="btn-secondary btn-small" style="border-color:var(--red);color:var(--red)">🗑️ Đặt Lại Tất Cả</button>
+              <input type="file" id="import-file" accept=".json" class="hidden">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Account Modal -->
+      <div id="account-modal" class="overlay hidden">
+        <div class="overlay-content modal-medium">
+          <h3 id="account-modal-title">➕ Add Account</h3>
+          <div class="form-grid">
+            <label>Username<input type="text" id="acc-username" placeholder="e.g. john_doe"></label>
+            <label>Email<input type="email" id="acc-email" placeholder="e.g. john@example.com"></label>
+            <label>Password<input type="password" id="acc-password" placeholder="Set password"></label>
+            <label>Role
+              <select id="acc-role">
+                <option value="customer">Customer</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+              </select>
+            </label>
+            <label>Số Dư / Balance (₫)<input type="number" id="acc-balance" value="0" min="0" step="1000"></label>
+            <label>Status
+              <select id="acc-status">
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+                <option value="banned">Banned</option>
+              </select>
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button id="btn-save-account" class="btn-primary">💾 Save Account</button>
+            <button id="btn-cancel-account" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
